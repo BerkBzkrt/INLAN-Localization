@@ -1,1 +1,1 @@
-Codebase for real-time tag tracking. Includes user-transmitter communication, data collection, and different algorithms for estimating the location of the tag.
+Codebase for real-time tag tracking. Includes user-transmitter communications, data collection, different algorithms for estimating the location of the tag, and Tkinter based animations to show the result of real-time estimation.
