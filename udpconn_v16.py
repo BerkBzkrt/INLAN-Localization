@@ -401,4 +401,4 @@ if __name__ == '__main__':
     #Display loop
     display_thread(udp,window,score_label,rx_list,rx_info,tag)
     udp.cmdloop()
-    #python ./udpconn_v15.py
+    #python ./udpconn_v16.py
