@@ -176,7 +176,7 @@ def estimate_lookup(amps_avg,table,n):
     Y = table[:,num_cols:]
     row = amps_avg.reshape((1,num_cols))
     ind = np.argsort(np.sum((X - row)**2, axis = 1))[:n]
-    est_x,est_y = np.sum(Y[ind], axis = 0) / num_data
+    est_x,est_y = np.sum(Y[ind], axis = 0) / n
     return est_x, est_y
 
 def setup_environment(udp,amps_avg,rx_info, csv_path = 'location_data.csv'):
@@ -304,7 +304,6 @@ def send_prompts(udp,rx_info):
     
     #interpret the response to the prompts 
     #str attribute of the udp object have the decoded message received from the transmitter
-    #TODO: handle the case where the order of the ports is changes (non-increasing order etc.) ============================================================================
     sample = np.zeros((2*num_rx,1))
     message = udp.str.split('-') #processed response message 
     for i in range(num_rx):
