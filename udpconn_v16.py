@@ -32,7 +32,7 @@ class UDPConn(cmd.Cmd):
         self.str = "" 
         self.window_size = window_size
         self.current_size = 0
-        self.num_rx = num_rx #change this later on
+        self.num_rx = num_rx 
         self.buffer = np.zeros((2*self.num_rx,self.window_size))
         self.estimates = [(SIDE/2,SIDE/2)]
         self.lookup = use_lookup
@@ -388,7 +388,7 @@ if __name__ == '__main__':
     s.bind(('',50001))
 
     #Read using the socket thread
-    udp = UDPConn(s, (host, port),num_rx = len(rx_info))
+    udp = UDPConn(s, (host, port),num_rx = len(rx_info),use_lookup= True, n = 1)
     th = threading.Thread(target=read_thread,args=(s, "name",udp))
     th.start()
 
