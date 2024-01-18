@@ -24,7 +24,7 @@ R = 5
 class UDPConn(cmd.Cmd):
     prompt = '' 
 
-    def __init__(self, s, destination, num_rx = 2, window_size = 25, use_lookup = False, n = 1):
+    def __init__(self, s, destination, num_rx = 2, window_size = 25, est_window = 5, use_lookup = False, n = 1):
         cmd.Cmd.__init__(self)
         self.s = s
         self.destination = destination
@@ -34,7 +34,10 @@ class UDPConn(cmd.Cmd):
         self.current_size = 0
         self.num_rx = num_rx 
         self.buffer = np.zeros((2*self.num_rx,self.window_size))
-        self.estimates = [(SIDE/2,SIDE/2)]
+        self.est_window = 5
+        self.current_est_size = 0
+        self.est_buffer = np.zeros((2,est_window))
+        self.estimates = [(DIST_X/2,DIST_Y/2)]
         self.lookup = use_lookup
         self.n = n
         self.table = np.zeros((50,num_rx + 2))
@@ -247,6 +250,10 @@ def setup_environment(udp,amps_avg,rx_info, csv_path = 'location_data.csv'):
 
     working_list = working_receivers(rx_list)
     x_est,y_est = find_estimate(udp,working_list)
+    est_sample = np.array([[x_est],[y_est]])
+    udp.est_buffer = np.concatenate((udp.est_buffer[:,1:],est_sample),axis=1)
+    udp.current_est_size += 1
+    x_est_avg, y_est_avg = np.sum(udp.est_buffer,axis=1) / min(udp.est_window,udp.current_est_size)
     udp.estimates.append((x_est,y_est))
     tag = Tag(x_est,y_est,canvas,height = HEIGHT, width = WIDTH, dist_x = DIST_X, dist_y = DIST_Y, color = 'red')
     # (self,x,y,canvas,height,width,dist_x,dist_y,x_vel = 0,y_vel = 0,color = 'red', R = 5) 
@@ -258,13 +265,18 @@ def setup_environment(udp,amps_avg,rx_info, csv_path = 'location_data.csv'):
 def update_step(udp, amps_avg, rx_list, tag, score_label):
     if udp.lookup:
         x_est,y_est = estimate_lookup(amps_avg,table = udp.table, n = udp.n)
-        score_label.config(text= f'{angle_str}, loc. = ({np.round(x_est,2)}, {np.round(y_est,2)})', font=("Helvetica", 12))
+        # score_label.config(text= f'{angle_str}, loc. = ({np.round(x_est,2)}, {np.round(y_est,2)})', font=("Helvetica", 12))
     else:
         x_est,y_est,angle_str = estimate_location(udp, amps_avg, rx_list)
-        score_label.config(text= f'loc. = ({np.round(x_est,2)}, {np.round(y_est,2)})', font=("Helvetica", 12))
+        # score_label.config(text= f'loc. = ({np.round(x_est,2)}, {np.round(y_est,2)})', font=("Helvetica", 12))
 
-    udp.estimates.append((x_est,y_est))
-    x_est_disp, y_est_disp = x_est * (WIDTH / DIST_X), y_est * (HEIGHT / DIST_Y) #for displaying purposes
+    est_sample = np.array([[x_est],[y_est]])
+    udp.est_buffer = np.concatenate((udp.est_buffer[:,1:],est_sample),axis=1)
+    udp.current_est_size += 1
+    x_est_avg, y_est_avg = np.sum(udp.est_buffer,axis=1) / min(udp.est_window,udp.current_est_size)
+    score_label.config(text= f'loc. = ({np.round(x_est_avg,2)}, {np.round(y_est_avg,2)})', font=("Helvetica", 12))
+    udp.estimates.append((x_est_avg,y_est_avg))
+    x_est_disp, y_est_disp = x_est_avg * (WIDTH / DIST_X), y_est_avg * (HEIGHT / DIST_Y) #for displaying purposes
     tag.canvas.moveto(tag.image,x_est_disp - R,HEIGHT - y_est_disp - R)
     
 
@@ -387,16 +399,16 @@ if __name__ == '__main__':
     s.bind(('',50001))
 
     #Read using the socket thread
-    udp = UDPConn(s, (host, port),num_rx = len(rx_info),use_lookup= True, n = 1)
+    udp = UDPConn(s, (host, port),num_rx = len(rx_info),use_lookup= False, n = 1)
     th = threading.Thread(target=read_thread,args=(s, "name",udp))
     th.start()
 
     #Send the prompts to the transmitter asking the x_mag and z_mag values to the transmitter
     
 
-
+    path = r'location_data.csv' #Change this if the name/path of the csv file with the measurements changes 
     amps_avg = send_prompts(udp = udp, rx_info = rx_info)
-    canvas, window, score_label, rx_list, lines, tag = setup_environment(udp,amps_avg,rx_info)
+    canvas, window, score_label, rx_list, lines, tag = setup_environment(udp,amps_avg,rx_info,csv_path=path)
     #Display loop
     display_thread(udp,window,score_label,rx_list,rx_info,tag)
     udp.cmdloop()
