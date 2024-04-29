@@ -1,1 +1,1 @@
-Codebase for real-time tag tracking. Includes user-transmitter communications, data collection, different algorithms for estimating the location of the tag, and Tkinter based animations to show the result of real-time estimation.
+This repository contains the RSS measurements obtained by mounting 4 receivers on the ceiling. Detailed information about the features and the experiment will be provided.
