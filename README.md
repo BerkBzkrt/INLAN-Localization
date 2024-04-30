@@ -1,1 +1,1 @@
-This repository contains the RSS measurements obtained by mounting 4 receivers on the ceiling. Detailed information about the features and the experiment will be provided.
+This repository contains the RSS measurements obtained by mounting 4 receivers on the ceiling. The corresponding dataset can be found at RSS_data.csv and the average noise floor measurement for each channel is at avg_noise.csv. Detailed information about the features and the experiment will also be provided soon.
