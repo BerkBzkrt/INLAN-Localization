@@ -27,5 +27,10 @@ y: y coordinate of the tag in meters.
 
 distance: distance of the tag in meters (separate for each line).
 
+Different experiment configurations and their corresponding data can be found in the related folders.
 
+Rooms setup for cross configuration:
+![alt text](https://github.com/BerkBzkrt/INLAN-Localization/blob/main/Cross%20configuration/cross_configuration.png)
+
+Room setup for square configuration:
 ![alt text](https://github.com/BerkBzkrt/INLAN-Localization/blob/main/Square%20configuration/square_configuration.png)
