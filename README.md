@@ -28,4 +28,4 @@ y: y coordinate of the tag in meters.
 distance: distance of the tag in meters (separate for each line).
 
 
-![alt text]https://github.com/BerkBzkrt/INLAN-Localization/blob/main/Square%20configuration/square_configuration.png
+![alt text](https://github.com/BerkBzkrt/INLAN-Localization/blob/main/Square%20configuration/square_configuration.png)
