@@ -27,7 +27,7 @@ y: y coordinate of the tag in meters.
 
 distance: distance of the tag in meters (separate for each line).
 
-Different experiment configurations and their corresponding data can be found in the related folders. Non-maxed versions consist of the measurements that are collected after switching the channel at the transmitter. Regular versions (RSS_data_cross.csv etc.) treat measurements coming out of two switched channels as one measurement by taking the maximum
+Different experiment configurations and their corresponding data can be found in the related folders. Non-maxed versions consist of the measurements that are collected after switching the channel at the transmitter (refer to the channel column of the dataset). Regular versions (RSS_data_cross.csv etc.) treat measurements coming out of two switched channels as one measurement by taking the maximum
 
 Rooms setup for cross configuration:
 ------------------------------------------------------------------------------------------------------------------------------------
